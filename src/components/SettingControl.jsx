@@ -170,10 +170,10 @@ function FixedChoiceControl({ setting, value, onChange }) {
     }
   }
 
-  const nonEmptyOptions = validOptions.filter(o => String(o.value).trim() !== '')
-
-  if (validOptions.length === 0 || nonEmptyOptions.length === 0) {
-    const candidates = (setting.candidateItems || []).filter(c => String(c).trim() !== '')
+  const presetCount = baseOptions.length + extraCandidates.length
+  
+  if (presetCount <= 1) {
+    const candidates = [...baseOptions, ...extraCandidates].map(o => String(o.value).trim()).filter(Boolean)
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', maxWidth: 450 }}>
         <input
@@ -185,17 +185,20 @@ function FixedChoiceControl({ setting, value, onChange }) {
         />
         {candidates.length > 0 && (
           <div className="preset-chips-grid">
-            {candidates.map((cand, idx) => (
-              <button
-                key={idx}
-                type="button"
-                className={`chip-btn ${selectedValue === cand ? 'active' : ''}`}
-                onClick={() => onChange(cand)}
-              >
-                <span className="chip-icon">{selectedValue === cand ? '✓' : '+'}</span>
-                {cand}
-              </button>
-            ))}
+            {candidates.map((cand, idx) => {
+              const isSelected = normalizeKey(String(selectedValue)) === normalizeKey(cand)
+              return (
+                <button
+                  key={idx}
+                  type="button"
+                  className={`chip-btn ${isSelected ? 'active' : ''}`}
+                  onClick={() => onChange(cand)}
+                >
+                  <span className="chip-icon">{isSelected ? '✓' : '+'}</span>
+                  {formatOptionLabel(cand, setting)}
+                </button>
+              )
+            })}
           </div>
         )}
       </div>
