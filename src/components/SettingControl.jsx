@@ -851,7 +851,7 @@ function normalizeKey(str) {
   return String(str ?? '')
     .toLowerCase()
     .replace(/[\s_-]+/g, ' ')
-    .replace(/\b(?:random|randomize|and|or|the|of|in|to|a|an)\b/gi, '')
+    .replace(/\b(?:random|randomize|and|or|the|of|in|to)\b/gi, '')
     .replace(/\s+/g, '')
 }
 
