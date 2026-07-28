@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="/static/styles/tooltip.css" />
+    <link rel="stylesheet" type="text/css" href="/static/styles/cookieNotice.css" />
+    <link rel="stylesheet" type="text/css" href="/static/styles/globalStyles.css" />
+    <script type="application/ecmascript" src="/static/assets/cookieNotice.js"></script>
+    
+    
+    
+    <link rel="stylesheet" type="text/css" href="/static/styles/themes/grass.css" />
+
+
+
+    <link rel="stylesheet" type="text/css" href="/static/styles/themes/base.css" />
+    <script type="application/ecmascript" src="/static/assets/baseHeader.js"></script>
+
+
+
+    <header id="base-header">
+        <div id="base-header-left">
+            <a href="/" id="site-title">
+                <img id="header-logo" src="/static/static/branding/header-logo.svg" alt="Archipelago" />
+            </a>
+        </div>
+        <div id="base-header-right">
+            <div id="base-header-popover-text">
+                <img id="base-header-popover-icon" src="/static/static/button-images/popover.png" alt="Popover Menu" />
+                get started
+            </div>
+            <div id="base-header-popover-menu">
+                <a href="/games">supported games</a>
+                <a href="/tutorial">setup guides</a>
+                <a href="/generate">generate game</a>
+                <a href="/uploads">host game</a>
+                <a href="/user-content">user content</a>
+            </div>
+            <a href="/faq/en">f.a.q</a>
+            <a href="https://discord.gg/8Z65BR2" target="_blank">discord</a>
+        </div>
+        <div id="base-header-right-mobile">
+            <a id="base-header-mobile-menu-button" href="#">
+                <img src="/static/static/button-images/hamburger-menu-icon.png" alt="Menu" />
+            </a>
+        </div>
+        <div id="base-header-mobile-menu">
+            <a href="/games">supported games</a>
+            <a href="/tutorial">setup guides</a>
+            <a href="/faq/en">f.a.q.</a>
+            <a href="/generate">generate game</a>
+            <a href="/uploads">host game</a>
+            <a href="/user-content">user content</a>
+            <a href="https://discord.gg/8Z65BR2" target="_blank">discord</a>
+        </div>
+    </header>
+
+    <title>Archipelago Guide</title>
+    <link rel="stylesheet" type="text/css" href="/static/styles/markdown.css" />
+
+</head>
+<body>
+    <main>
+        
+            
+        
+
+        
+    <div class="markdown">
+        <h1 id="advanced-yaml-guide"><a href="#advanced-yaml-guide">Advanced YAML Guide</a></h1>
+<p>This guide covers more the more advanced options available in YAML files. This guide is intended for the user who plans
+to edit their YAML file manually. This guide should take about 10 minutes to read.</p>
+<p>If you would like to generate a basic, fully playable YAML without editing a file, then visit the options page for the
+game you intend to play.</p>
+<p>The options page can be found on the supported games page, just click the &quot;Options Page&quot; link under the name of the
+game you would like.</p>
+<ul>
+<li>Supported games page: <a href="/games">Archipelago Games List</a></li>
+</ul>
+<p>Clicking on the &quot;Export Options&quot; button at the bottom-left will provide you with a pre-filled YAML with your options.
+The player options page also has a link to download a full template file for that game which will have every option
+possible for the game including some that don't display correctly on the site.</p>
+<h2 id="yaml-overview"><a href="#yaml-overview">YAML Overview</a></h2>
+<p>The Archipelago system generates games using player configuration files as input. These are going to be YAML files and
+each world will have one of these containing their custom options for the game that world will play.</p>
+<h2 id="yaml-formatting"><a href="#yaml-formatting">YAML Formatting</a></h2>
+<p>YAML files are a format of human-readable config files. The basic syntax of a yaml file will have a <code>root</code> node and then
+different levels of <code>nested</code> nodes that the generator reads in order to determine your options.</p>
+<p>To nest text, the correct syntax is to indent <strong>two spaces over</strong> from its root option. A YAML file can be edited with
+whatever text editor you choose to use though I personally recommend that you use Sublime Text. Sublime text
+website: <a href="https://www.sublimetext.com">SublimeText Website</a></p>
+<p>This program out of the box supports the correct formatting for the YAML file, so you will be able to use the tab key
+and get proper highlighting for any potential errors made while editing the file. If using any other text editor you
+should ensure your indentation is done correctly with two spaces. After editing your YAML file, you can validate it at
+the website's <a href="/check">validation page</a>.</p>
+<p>A typical YAML file will look like:</p>
+<pre><code class="language-yaml">root_option:
+  nested_option_one:
+    option_one_setting_one: 1
+    option_one_setting_two: 0
+  nested_option_two:
+    option_two_setting_one: 14
+    option_two_setting_two: 43
+</code></pre>
+<p>In Archipelago, YAML options are always written out in full lowercase with underscores separating any words. The numbers
+following the colons here are weights. The generator will read the weight of every option, then roll that option that
+many times, the next option as many times as its numbered and so forth.</p>
+<p>For the above example <code>nested_option_one</code> will have <code>option_one_setting_one</code> 1 time and <code>option_one_setting_two</code> 0 times
+so <code>option_one_setting_one</code> is guaranteed to occur.</p>
+<p>For <code>nested_option_two</code>, <code>option_two_setting_one</code> will be rolled 14 times and <code>option_two_setting_two</code> will be rolled 43
+times against each other. This means <code>option_two_setting_two</code> will be more likely to occur, but it isn't guaranteed,
+adding more randomness and &quot;mystery&quot; to your options. Every configurable setting supports weights.</p>
+<h2 id="root-options"><a href="#root-options">Root Options</a></h2>
+<p>Currently, there are only a few options that are root options. Everything else should be nested within one of these root
+options or in some cases nested within other nested options. The only options that should exist in root
+are <code>description</code>, <code>name</code>, <code>game</code>, <code>requires</code>, and the name of the games you want options for.</p>
+<ul>
+<li><p><code>description</code> is ignored by the generator and is simply a good way for you to organize if you have multiple files
+using this to detail the intention of the file.</p>
+</li>
+<li><p><code>name</code> is the player name you would like to use and is used for your slot data to connect with most games. This can
+also be filled with multiple names each having a weight to it. Names can also contain certain keywords, surrounded by
+curly-braces, which will be replaced on generation with a number:</p>
+<ul>
+<li><code>{player}</code> will be replaced with the player's slot number.</li>
+<li><code>{PLAYER}</code> will be replaced with the player's slot number if that slot number is greater than 1, otherwise blank.</li>
+<li><code>{number}</code> will be replaced with the counter value of the name.</li>
+<li><code>{NUMBER}</code> will be replaced with the counter value of the name if the counter value is greater than 1, otherwise
+blank.</li>
+</ul>
+</li>
+<li><p><code>game</code> is where either your chosen game goes or, if you would like, can be filled with multiple games each with
+different weights.</p>
+</li>
+<li><p><code>requires</code> details different requirements from the generator for the YAML to work as you expect it to. Generally this
+is good for detailing the version of Archipelago this YAML was prepared for. If it is rolled on an older version,
+options may be missing and as such it will not work as expected. If any plando is used in the file then requiring it
+here to ensure it will be used is good practice. Specific versions of custom worlds can also be required, ensuring
+that the generator is using a compatible version.</p>
+</li>
+</ul>
+<h2 id="game-options"><a href="#game-options">Game Options</a></h2>
+<p>One of your root options will be the name of the game you would like to populate with options. Since it is possible to
+give a weight to any option, it is possible to have one file that can generate a seed for you where you don't know which
+game you'll play. For these cases you'll want to fill the game options for every game that can be rolled by these
+settings. If a game can be rolled it <strong>must</strong> have an options section even if it is empty.</p>
+<h3 id="universal-game-options"><a href="#universal-game-options">Universal Game Options</a></h3>
+<p>Some options in Archipelago can be used by every game but must still be placed within the relevant game's section.</p>
+<p>Currently, these options are <code>accessibility</code>, <code>progression_balancing</code>, <code>triggers</code>, <code>local_items</code>, <code>non_local_items</code>,
+<code>start_inventory</code>, <code>start_hints</code>, <code>start_location_hints</code>, <code>exclude_locations</code>, <code>priority_locations</code>, <code>item_links</code>, and
+various plando options.</p>
+<p>See the plando guide for more info on plando options. Plando
+guide: <a href="/tutorial/Archipelago/plando/en">Archipelago Plando Guide</a></p>
+<ul>
+<li><code>accessibility</code> determines the level of access to the game the generation will expect you to have in order to reach
+your completion goal. This supports <code>full</code>, <code>items</code>, and <code>minimal</code> and is set to <code>full</code> by default.<ul>
+<li><code>full</code> will guarantee all locations are accessible in your world.</li>
+<li><code>items</code> will guarantee you can acquire all logically relevant items in your world. Some items, such as keys, may
+be self-locking. This value only exists in and affects some worlds.</li>
+<li><code>minimal</code> will only guarantee that the seed is beatable. You will be guaranteed able to finish the seed logically
+but may not be able to access all locations or acquire all items. A good example of this is having a big key in
+the big chest in a dungeon in ALTTP making it impossible to get and finish the dungeon.</li>
+</ul>
+</li>
+<li><code>progression_balancing</code> is a system the Archipelago generator uses to try and reduce
+<a href="/glossary/en/#burger-king-/-bk-mode">&quot;BK mode&quot;</a>
+as much as possible.
+This primarily involves moving necessary progression items into earlier logic spheres to make the games more
+accessible so that players almost always have something to do. This can be in a range from 0 to 99, and is 50 by
+default. This number represents a percentage of the furthest progressible player.<ul>
+<li>For example: With the default of 50%, if the furthest player can access 40% of their items, the randomizer tries
+to let you access at least 20% of your items. 50% of 40% is 20%.</li>
+<li>Note that it is not always guaranteed that it will be able to bring you up to this threshold.</li>
+</ul>
+</li>
+<li><code>triggers</code> is one of the more advanced options that allows you to create conditional adjustments. You can read
+more triggers in the triggers guide. Triggers
+guide: <a href="/tutorial/Archipelago/triggers/en">Archipelago Triggers Guide</a></li>
+<li><code>local_items</code> will force any items you want to be in your world instead of being in another world.</li>
+<li><code>non_local_items</code> is the inverse of <code>local_items</code>, forcing any items you want to be in another world instead of
+your own.</li>
+<li><code>start_inventory</code> will give any items defined here to you at the beginning of your game. The format for this must be
+the name as it appears in the game files and the amount you would like to start with. For example <code>Rupees(5): 6</code> which
+will give you 30 rupees.</li>
+<li><code>start_hints</code> gives you free server hints for the defined items at the beginning of the game, allowing you to hint for
+the location without using any hint points.</li>
+<li><code>start_location_hints</code> is the same as <code>start_hints</code> but for locations, allowing you to hint for the item contained
+there without using any hint points.</li>
+<li><code>exclude_locations</code> lets you define any locations that you don't want to do and prevents items classified as
+&quot;progression&quot; or &quot;useful&quot; from being placed on them.</li>
+<li><code>priority_locations</code> lets you define any locations that you want to do and forces a progression item into these
+locations.</li>
+<li><code>item_links</code> allows players to link their items into a group with the same item link name and game. The items declared
+in <code>item_pool</code> get combined and when an item is found for the group, all players in the group receive it. Item links
+can also have local and non-local items, forcing the items to either be placed within the worlds of the group or in
+worlds outside the group. If players have a varying amount of a specific item in the link, the lowest amount from the
+players will be the amount put into the group.</li>
+</ul>
+<h3 id="random-numbers"><a href="#random-numbers">Random numbers</a></h3>
+<p>Options taking a choice of a number can also use a variety of <code>random</code> options to choose a number randomly.</p>
+<ul>
+<li><code>random</code> will choose a number allowed for the setting at random</li>
+<li><code>random-low</code> will choose a number allowed for the setting at random, but will be weighted towards lower numbers</li>
+<li><code>random-middle</code> will choose a number allowed for the setting at random, but will be weighted towards the middle of the
+range</li>
+<li><code>random-high</code> will choose a number allowed for the setting at random, but will be weighted towards higher numbers</li>
+<li><code>random-range-#-#</code> will choose a number at random from between the specified numbers. For example <code>random-range-40-60</code>
+will choose a number between 40 and 60</li>
+<li><code>random-range-low-#-#</code>, <code>random-range-middle-#-#</code>, and <code>random-range-high-#-#</code> will choose a number at random from the
+specified numbers, but with the specified weights</li>
+</ul>
+<p>Options defining a unique set of options can also make use of the prior <code>random</code> options to select a subset of possible
+options. The resulting number is used as the number of random items the set should contain.</p>
+<h3 id="example"><a href="#example">Example</a></h3>
+<pre><code class="language-yaml">
+description: An example using various advanced options
+name: Example Player
+game: 
+  A Link to the Past: 10
+  Timespinner: 10
+requires: 
+  version: 0.6.4
+  game:
+      A Link to the Past: 0.6.4
+A Link to the Past:
+  accessibility: minimal
+  progression_balancing: 50
+  smallkey_shuffle:
+    original_dungeon: 1
+    any_world: 1
+  crystals_needed_for_gt:
+    random-low: 1
+  crystals_needed_for_ganon:
+    random-range-high-1-7: 1
+  local_items:
+    - Bombos
+    - Ether
+    - Quake
+  non_local_items:
+    - Moon Pearl
+  start_inventory:
+    Pegasus Boots: 1
+    Bombs (3): 2
+  start_hints:
+    - Hammer
+  start_location_hints:
+    - Spike Cave
+  exclude_locations:
+    - Cave 45
+  priority_locations:
+    - Link's House
+  item_links:
+    - name: rods
+      item_pool:
+        - Fire Rod
+        - Ice Rod
+      replacement_item: &quot;Rupee (1)&quot;
+      link_replacement: true
+  triggers:
+    - option_category: A Link to the Past
+      option_name: smallkey_shuffle
+      option_result: any_world
+      options:
+        A Link to the Past:
+          bigkey_shuffle: any_world
+          map_shuffle: any_world
+          compass_shuffle: any_world
+Timespinner:
+  accessibility: minimal
+  progression_balancing: 50
+  item_links: # Share part of your item pool with other players.
+    - name: TSAll
+      item_pool:
+        - Everything
+      local_items:
+        - Twin Pyramid Key
+        - Timespinner Wheel
+      replacement_item: null
+      skip_if_solo: true
+</code></pre>
+<h4>This is a fully functional yaml file that will do all the following things:</h4>
+<ul>
+<li><code>description</code> gives us a general overview so if we pull up this file later we can understand the intent.</li>
+<li><code>name</code> is <code>Example Player</code> and this will be used in the server console when sending and receiving items.</li>
+<li><code>game</code> has an equal chance of being either <code>A Link to the Past</code> or <code>Timespinner</code> with a 10/20 chance for each. This is
+because each game has a weight of 10 and the total of all weights is 20.</li>
+<li><code>requires</code> is set to require Archipelago release version 0.6.4 or higher, as well as A Link to the Past version 0.6.4.</li>
+<li><code>accessibility</code> for both games is set to <code>minimal</code> which will set this seed to beatable only, so some locations and
+items may be completely inaccessible but the seed will still be completable.</li>
+<li><code>progression_balancing</code> for both games is set to 50, the default value, meaning we will likely receive important items
+earlier, increasing the chance of having things to do.</li>
+<li><code>A Link to the Past</code> defines a location for us to nest all the game options we would like to use for our
+game <code>A Link to the Past</code>.</li>
+<li><code>smallkey_shuffle</code> is an option for A Link to the Past which determines how dungeon small keys are shuffled. In this
+example we have a 1/2 chance for them to either be placed in their original dungeon and a 1/2 chance for them to be
+placed anywhere amongst the multiworld.</li>
+<li><code>crystals_needed_for_gt</code> determines the number of crystals required to enter the Ganon's Tower entrance. In this
+example a random number will be chosen from the allowed range for this setting (0 through 7) but will be weighted
+towards a lower number.</li>
+<li><code>crystals_needed_for_ganon</code> determines the number of crystals required to beat Ganon. In this example a number between
+1 and 7 will be chosen at random, weighted towards a high number.</li>
+<li><code>local_items</code> forces the <code>Bombos</code>, <code>Ether</code>, and <code>Quake</code> medallions to all be placed within our own world, meaning we
+have to find it ourselves.</li>
+<li><code>non_local_items</code> forces the <code>Moon Pearl</code> to be placed in someone else's world, meaning we won't be able to find it.</li>
+<li><code>start_inventory</code> defines an area for us to determine what items we would like to start the seed with. For this
+example we have:<ul>
+<li><code>Pegasus Boots: 1</code> which gives us 1 copy of the Pegasus Boots</li>
+<li><code>Bombs (3): 2</code> gives us 2 packs of 3 bombs or 6 total bombs</li>
+</ul>
+</li>
+<li><code>start_hints</code> gives us a starting hint for the hammer available at the beginning of the multiworld which we can use
+with no cost.</li>
+<li><code>start_location_hints</code> gives us a starting hint for the <code>Spike Cave</code> location available at the beginning of the
+multiworld that can be used for no cost.</li>
+<li><code>exclude_locations</code> forces a not important item to be placed on the <code>Cave 45</code> location.</li>
+<li><code>priority_locations</code> forces a progression item to be placed on the <code>Link's House</code> location.</li>
+<li><code>item_links</code><ul>
+<li>For <code>A Link to the Past</code> all players in the <code>rods</code> item link group will share their fire and ice rods and the player
+items will be replaced with single rupees. The rupee will also be shared among those players.</li>
+<li>For <code>Timespinner</code> all players in the <code>TSAll</code> item link group will share their entire item pool and the <code>Twin Pyramid Key</code> and <code>Timespinner Wheel</code> will be forced among the worlds of those in the group. The <code>null</code> replacement item
+will, instead of forcing a specific chosen item, allow the generator to randomly pick a filler item to replace the
+player items. This item link will only be created if there are at least two players in the group.</li>
+</ul>
+</li>
+<li><code>triggers</code> allows us to define a trigger such that if our <code>smallkey_shuffle</code> option happens to roll the <code>any_world</code>
+result it will also ensure that <code>bigkey_shuffle</code>, <code>map_shuffle</code>, and <code>compass_shuffle</code> are also forced to the
+<code>any_world</code> result. More information on triggers can be found in the
+<a href="/tutorial/Archipelago/triggers/en">triggers guide</a>.</li>
+</ul>
+<h2 id="generating-multiple-worlds"><a href="#generating-multiple-worlds">Generating Multiple Worlds</a></h2>
+<p>YAML files can be configured to generate multiple worlds using only one file. This is mostly useful if you are playing
+an asynchronous multiworld (shortened to async) and are wanting to submit multiple worlds as they can be condensed into
+one file, removing the need to manage separate files if one chooses to do so.</p>
+<p>As a precautionary measure, before submitting a multi-game yaml like this one in a synchronous/sync multiworld, please
+confirm that the other players in the multi are OK with what you are submitting, and please be fairly reasonable about
+the submission. (i.e. Multiple long games (SMZ3, OoT, HK, etc.) for a game intended to be &lt;2 hrs is not likely considered
+reasonable, but submitting a ChecksFinder alongside another game is likely
+OK)</p>
+<p>To configure your file to generate multiple worlds, use 3 dashes <code>---</code> on an empty line to separate the ending of one
+world and the beginning of another world. You can also combine multiple files by uploading them to the
+<a href="/check">validation page</a>.</p>
+<h3 id="example-1"><a href="#example-1">Example</a></h3>
+<pre><code class="language-yaml">description: Example of generating multiple worlds. World 1 of 2
+name: Mario
+game: Super Mario 64
+requires:
+  version: 0.3.2
+Super Mario 64:
+  progression_balancing: 50
+  accessibility: items
+  EnableCoinStars: false
+  StrictCapRequirements: true
+  StrictCannonRequirements: true
+  StarsToFinish: 70
+  AmountOfStars: 70
+  DeathLink: true
+  BuddyChecks: true
+  AreaRandomizer: true
+  ProgressiveKeys:
+    true: 1
+    false: 1
+
+---
+
+description: Example of generating multiple worlds. World 2 of 2
+name: ExampleFinder
+game: ChecksFinder
+
+ChecksFinder: 
+  progression_balancing: 50
+  accessibility: items
+</code></pre>
+<p>The above example will generate 2 worlds - one Super Mario 64 and one ChecksFinder.</p>
+
+    </div>
+
+    </main>
+
+    
+</body>
+</html>
