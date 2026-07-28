@@ -872,15 +872,6 @@ function formatOptionLabel(val, setting) {
     }
   }
 
-  // 3. Match against setting options comments if clean
-  if (setting?.options) {
-    const opt = setting.options.find(
-      o => normalizeKey(o.value) === normVal
-    )
-    if (opt?.comment && opt.comment.length <= 40) {
-      return opt.comment
-    }
-  }
 
   // 4. Title case with lowercase conjunctions/prepositions
   const smallWords = new Set(['and', 'or', 'of', 'the', 'in', 'for', 'to', 'with', 'a', 'an', 'by', 'at', 'on'])
