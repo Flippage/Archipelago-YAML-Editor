@@ -145,14 +145,23 @@ function FixedChoiceControl({ setting, value, onChange }) {
   }
 
   // Regular choice: simple dropdown or custom text input if options are empty
-  const baseOptions = (options || []).filter(o => !String(o.value).startsWith('random-'))
-  const existingValues = new Set(baseOptions.map(o => normalizeKey(o.value)))
+  const rawBaseOptions = (options || []).filter(o => !String(o.value).startsWith('random-') && String(o.value) !== 'random')
+  
+  const baseOptions = []
+  const existingValues = new Set()
+  for (const opt of rawBaseOptions) {
+    const norm = normalizeKey(opt.value)
+    if (norm && !existingValues.has(norm)) {
+      baseOptions.push(opt)
+      existingValues.add(norm)
+    }
+  }
 
   const extraCandidates = (setting.candidateItems || [])
     .filter(c => {
       const s = String(c).trim()
       const norm = normalizeKey(s)
-      return s && !s.startsWith('random') && norm && !existingValues.has(norm)
+      return s && !s.startsWith('random') && s !== 'random' && norm && !existingValues.has(norm)
     })
     .map(c => ({ value: String(c), weight: 0, comment: '' }))
 
@@ -854,7 +863,7 @@ function normalizeKey(str) {
   return String(str ?? '')
     .toLowerCase()
     .replace(/[\s_-]+/g, ' ')
-    .replace(/\b(?:random|randomize|and|or|the|of|in|to)\b/gi, '')
+    .replace(/\b(?:random|randomize|and|or|the|of)\b/gi, '')
     .replace(/\s+/g, '')
 }
 
