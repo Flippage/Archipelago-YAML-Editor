@@ -22,18 +22,21 @@ function App() {
     setSelectedTemplate(template)
     setEditingYaml(null)
     setView('editor')
+    window.scrollTo(0, 0)
   }
 
   const handleEditYaml = (yamlData, templateData) => {
     setSelectedTemplate(templateData)
     setEditingYaml(yamlData)
     setView('editor')
+    window.scrollTo(0, 0)
   }
 
   const handleBack = () => {
     setView('dashboard')
     setSelectedTemplate(null)
     setEditingYaml(null)
+    window.scrollTo(0, 0)
   }
 
   return (
