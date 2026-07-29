@@ -862,9 +862,7 @@ function normalizeKey(str) {
   if (str === true) return 'true'
   return String(str ?? '')
     .toLowerCase()
-    .replace(/[\s_-]+/g, ' ')
-    .replace(/\b(?:random|randomize|and|or|the|of)\b/gi, '')
-    .replace(/\s+/g, '')
+    .replace(/[^a-z0-9]/g, '')
 }
 
 function formatOptionLabel(val, setting) {

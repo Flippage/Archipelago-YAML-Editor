@@ -440,9 +440,7 @@ function normalizeKey(str) {
   if (str === true) return 'true';
   return String(str ?? '')
     .toLowerCase()
-    .replace(/[\s_-]+/g, ' ')
-    .replace(/\b(?:random|randomize|and|or|the|of)\b/gi, '')
-    .replace(/\s+/g, '');
+    .replace(/[^a-z0-9]/g, '');
 }
 
   // Ensure candidate items are included in setting options (only if setting.options has < 2 choices)
