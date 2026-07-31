@@ -686,7 +686,7 @@ function extractCandidatesFromComments(description, settingKey) {
   const extractedOptionKeys = [];
   const excludedHeaders = new Set([
     'categories', 'locations', 'items', 'options', 'choices', 'allowed areas', 'available items',
-    'valid options', 'valid options are', 'valid keys', 'valid keys are', 'allowed options', 'allowed options are', 'options are',
+    'valid options', 'valid options are', 'valid keys', 'valid keys are', 'valid values', 'valid values are', 'allowed options', 'allowed options are', 'options are',
     'choices are', 'values are', 'minimum value', 'maximum value', 'note', 'warning', 'disclaimer',
     'important note', 'important', 'tip', 'info', 'notice', 'caution', 'requirement', 'example',
     'examples', 'actual options', 'side effects', 'remember',
@@ -783,7 +783,7 @@ function extractCandidatesFromComments(description, settingKey) {
       }
       content = cleanCandidateKey(content);
       content = content.replace(/^["']|["']$/g, '').trim();
-      if (content && content.length <= 40 && !/^\d+$/.test(content) && !excludedHeaders.has(content.toLowerCase()) && !extractedOptionKeys.includes(content)) {
+      if (content && content.length <= 40 && !content.includes(',') && !/^\d+$/.test(content) && !excludedHeaders.has(content.toLowerCase()) && !extractedOptionKeys.includes(content)) {
         extractedOptionKeys.push(content);
       }
       continue;
