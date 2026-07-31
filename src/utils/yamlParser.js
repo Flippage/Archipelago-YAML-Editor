@@ -347,7 +347,7 @@ function finalizeSetting(setting) {
     const hasManyCommentCandidates = setting.candidateItems && setting.candidateItems.length > choiceOptions.length;
     const nonZeroCount = choiceOptions.filter(o => !String(o.value).startsWith('random') && o.weight > 0).length;
     const allZero = choiceOptions.length > 1 && choiceOptions.every(o => o.weight === 0);
-    const isDictMap = isWeightedName || hasCandidateDict || allZero || nonZeroCount > 1 || hasManyCommentCandidates;
+    const isDictMap = isWeightedName || hasCandidateDict || allZero || nonZeroCount > 1;
 
     if (isDictMap) {
       setting.type = 'dict';
@@ -411,6 +411,19 @@ function finalizeSetting(setting) {
             }
           }
         }
+      }
+
+      // If description comments list more items than the YAML options (e.g. comments have
+      // ["Van", "Fire Truck", ...] but YAML only has All: 50), this is a list-type setting
+      // where users pick multiple items, not a single-choice dropdown.
+      if (hasManyCommentCandidates && setting.type === 'choice') {
+        setting.type = 'list';
+        setting.isHybridSet = true;
+        // Convert defaultValue to an array of the YAML keys
+        const defaultItems = choiceOptions
+          .filter(o => o.weight > 0 && !String(o.value).startsWith('random'))
+          .map(o => String(o.value));
+        setting.defaultValue = defaultItems;
       }
     }
   } else {
