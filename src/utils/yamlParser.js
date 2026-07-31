@@ -686,7 +686,7 @@ function extractCandidatesFromComments(description, settingKey) {
   const extractedOptionKeys = [];
   const excludedHeaders = new Set([
     'categories', 'locations', 'items', 'options', 'choices', 'allowed areas', 'available items',
-    'valid options', 'valid options are', 'allowed options', 'allowed options are', 'options are',
+    'valid options', 'valid options are', 'valid keys', 'valid keys are', 'allowed options', 'allowed options are', 'options are',
     'choices are', 'values are', 'minimum value', 'maximum value', 'note', 'warning', 'disclaimer',
     'important note', 'important', 'tip', 'info', 'notice', 'caution', 'requirement', 'example',
     'examples', 'actual options', 'side effects', 'remember',
@@ -793,7 +793,7 @@ function extractCandidatesFromComments(description, settingKey) {
     const cleanLine = trimmed.replace(/^[*_~`]+/, '').replace(/[*_~`]+\s*:/, ':').trim();
     const proseSentenceRegex = /\b(?:should|provided|form|example|must|refer|according|specified|defined|listed|such|information|details|following|format|syntax)\b/i;
     const headerPrefixRegex = /^(?:with|uses|format|supported|available|only|for|note|important|set|select|list|include|prevents|forces|refer|according|this|that|these|those)\b/i;
-    const keyMatch = cleanLine.match(/^([A-Za-z0-9_\-\s'*\(\)]+):\s*(.*)$/);
+    const keyMatch = cleanLine.match(/^([A-Za-z0-9_\-\s'"*\(\)]+):\s*(.*)$/);
     if (keyMatch && keyMatch[1]) {
       let keyName = cleanCandidateKey(keyMatch[1]);
       keyName = keyName.replace(/^["']|["']$/g, '').trim();
