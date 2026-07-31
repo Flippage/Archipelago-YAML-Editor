@@ -345,7 +345,7 @@ function finalizeSetting(setting) {
     setting.defaultValue = dictItems;
   } else if (hasChoiceItems) {
     const lowerKey = setting.key.toLowerCase();
-    const isWeightedName = lowerKey.includes('weights') || lowerKey.includes('distribution') || lowerKey.endsWith('_plando') || lowerKey.endsWith('_inventory') || lowerKey.endsWith('_overrides') || lowerKey === 'game_options' || lowerKey.endsWith('_options');
+    const isWeightedName = lowerKey.includes('weights') || lowerKey.endsWith('_plando') || lowerKey.endsWith('_inventory') || lowerKey.endsWith('_overrides') || lowerKey === 'game_options' || lowerKey.endsWith('_options');
     const hasCandidateDict = setting.candidateDict && Object.keys(setting.candidateDict).length > 0;
     const hasManyCommentCandidates = setting.candidateItems && setting.candidateItems.length > choiceOptions.length;
     const nonZeroCount = choiceOptions.filter(o => !String(o.value).startsWith('random') && o.weight > 0).length;
@@ -628,7 +628,10 @@ function extractCandidatesFromComments(description, settingKey) {
         let j = i + 1;
         while (j < lines.length) {
           const nextLine = lines[j].trim();
-          if (!nextLine || nextLine.match(/^(?:Allowed|Valid|Available|Possible|Supported)?\s*(?:areas|locations|items|options|choices|pool|values)(?:\s+are)?:/i) || nextLine.startsWith('-')) {
+          if (!nextLine || 
+              nextLine.match(/^(?:Allowed|Valid|Available|Possible|Supported)?\s*(?:areas|locations|items|options|choices|pool|values)(?:\s+are)?:/i) || 
+              nextLine.startsWith('-') ||
+              nextLine.match(/^[A-Za-z0-9_\-]+:/)) {
             break;
           }
           textBlock += ' ' + nextLine;
