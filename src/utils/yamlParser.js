@@ -188,13 +188,16 @@ function finalizeSetting(setting) {
   }
 
   // Extract candidate items/dicts from comments
-  const { candidateItems, candidateDict } = extractCandidatesFromComments(setting.description, setting.key);
+  const { candidateItems, candidateDict, wasBracketArray, wasCommaList } = extractCandidatesFromComments(setting.description, setting.key);
   if (candidateItems && candidateItems.length > 0) {
     setting.candidateItems = candidateItems;
   }
   if (candidateDict && Object.keys(candidateDict).length > 0) {
     setting.candidateDict = candidateDict;
   }
+  
+  setting.wasBracketArray = wasBracketArray;
+  setting.wasCommaList = wasCommaList;
 
   // Extract example YAML block if present in comments
   const exampleYaml = extractExampleYaml(setting.description);
@@ -395,48 +398,44 @@ function finalizeSetting(setting) {
       }
 
       setting.options = choiceOptions;
-      if (choiceOptions.length > 0) {
-        const optKeys = choiceOptions
-          .map(o => String(o.value))
-          .filter(v => !v.startsWith('random'));
-        if (optKeys.length > 0) {
-          if (!setting.candidateItems) {
-            setting.candidateItems = [...optKeys];
-          } else {
-            // Merge option keys into existing candidateItems (from description comments)
-            for (const k of optKeys) {
-              if (!setting.candidateItems.includes(k)) {
-                setting.candidateItems.push(k);
-              }
-            }
-          }
-        }
-      }
 
-      // Check if the base options are purely true/false (ignoring randoms).
-      // If so, it's a strict boolean toggle and shouldn't be converted to a list
-      // even if the description comments contain bullet points.
+      // Extract base option keys from YAML
       const baseOptKeys = choiceOptions
-        .map(o => String(o.value).toLowerCase())
+        .map(o => String(o.value))
         .filter(v => !v.startsWith('random'));
-      const isPureBoolean = baseOptKeys.length > 0 && baseOptKeys.every(k => k === 'true' || k === 'false');
+
+      // Check if it's a pure boolean toggle
+      const lowerBaseKeys = baseOptKeys.map(k => k.toLowerCase());
+      const isPureBoolean = lowerBaseKeys.length > 0 && lowerBaseKeys.every(k => k === 'true' || k === 'false');
 
       // If description comments list more items than the YAML options (e.g. comments have
       // ["Van", "Fire Truck", ...] but YAML only has All: 50), this is a list-type setting
       // where users pick multiple items, not a single-choice dropdown.
-      if (hasManyCommentCandidates && setting.type === 'choice' && !isPureBoolean) {
+      const isExplicitList = setting.wasBracketArray || setting.wasCommaList;
+      if (hasManyCommentCandidates && setting.type === 'choice' && !isPureBoolean && isExplicitList) {
         setting.type = 'list';
         setting.isHybridSet = true;
         // Convert defaultValue to an array of the YAML keys
-        const defaultItems = choiceOptions
+        setting.defaultValue = choiceOptions
           .filter(o => o.weight > 0 && !String(o.value).startsWith('random'))
           .map(o => String(o.value));
-        setting.defaultValue = defaultItems;
       }
 
-      // If it IS a pure boolean toggle, we shouldn't show the extracted comments as options
-      if (isPureBoolean) {
-        setting.candidateItems = [...baseOptKeys];
+      // Assign candidateItems based on the finalized type
+      if (setting.type === 'list') {
+        if (baseOptKeys.length > 0) {
+          if (!setting.candidateItems) setting.candidateItems = [];
+          // For lists, we KEEP the comment-extracted candidates (e.g. locations) and merge YAML keys
+          for (const k of baseOptKeys) {
+            if (!setting.candidateItems.includes(k)) {
+              setting.candidateItems.push(k);
+            }
+          }
+        }
+      } else {
+        // For choice and range settings, comment bullet points are just descriptive text.
+        // Discard them and ONLY use the explicit YAML options as candidates.
+        setting.candidateItems = baseOptKeys.length > 0 ? [...baseOptKeys] : null;
       }
     }
   } else {
@@ -574,6 +573,8 @@ function extractCandidatesFromComments(description, settingKey) {
 
   let candidateItems = null;
   let candidateDict = null;
+  let wasBracketArray = false;
+  let wasCommaList = false;
 
   // Extract sub-option dict maps like "battle_animations: all/no_scene/no_bars/speedy - Sets which..."
   const subOptionMap = {};
@@ -606,6 +607,7 @@ function extractCandidatesFromComments(description, settingKey) {
         const parsed = YAML.parse(candidateStr);
         if (Array.isArray(parsed) && parsed.length > 0) {
           candidateItems = parsed.map(String);
+          wasBracketArray = true;
           break;
         }
       } catch (e) {}
@@ -669,6 +671,7 @@ function extractCandidatesFromComments(description, settingKey) {
                 if (!candidateItems.includes(item)) candidateItems.push(item);
               }
             }
+            wasCommaList = true;
             break;
           }
         }
@@ -889,10 +892,8 @@ function extractCandidatesFromComments(description, settingKey) {
 
   if (foundSpecials.length > 0) {
     if (!candidateItems) candidateItems = [];
-    for (const sp of foundSpecials) {
-      if (!candidateItems.includes(sp)) {
-        candidateItems.push(sp);
-      }
+    for (const s of foundSpecials) {
+      if (!candidateItems.includes(s)) candidateItems.push(s);
     }
   }
 
@@ -913,7 +914,7 @@ function extractCandidatesFromComments(description, settingKey) {
     dictStart = description.indexOf('{', dictStart + 1);
   }
 
-  return { candidateItems, candidateDict };
+  return { candidateItems, candidateDict, wasBracketArray, wasCommaList };
 }
 
 function coerceValue(val) {
