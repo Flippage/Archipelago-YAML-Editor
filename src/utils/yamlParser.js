@@ -344,9 +344,10 @@ function finalizeSetting(setting) {
     const lowerKey = setting.key.toLowerCase();
     const isWeightedName = lowerKey.includes('weights') || lowerKey.includes('distribution') || lowerKey.endsWith('_plando') || lowerKey.endsWith('_inventory') || lowerKey.endsWith('_overrides') || lowerKey === 'game_options' || lowerKey.endsWith('_options');
     const hasCandidateDict = setting.candidateDict && Object.keys(setting.candidateDict).length > 0;
+    const hasManyCommentCandidates = setting.candidateItems && setting.candidateItems.length > choiceOptions.length;
     const nonZeroCount = choiceOptions.filter(o => !String(o.value).startsWith('random') && o.weight > 0).length;
     const allZero = choiceOptions.length > 1 && choiceOptions.every(o => o.weight === 0);
-    const isDictMap = isWeightedName || hasCandidateDict || allZero || nonZeroCount > 1;
+    const isDictMap = isWeightedName || hasCandidateDict || allZero || nonZeroCount > 1 || hasManyCommentCandidates;
 
     if (isDictMap) {
       setting.type = 'dict';
