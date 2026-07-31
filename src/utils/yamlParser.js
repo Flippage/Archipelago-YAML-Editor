@@ -482,7 +482,7 @@ function normalizeKey(str) {
   if ((setting.type === 'choice' || setting.type === 'range' || setting.options) && setting.candidateItems && setting.candidateItems.length > 0) {
     // Clean candidateItems
     setting.candidateItems = setting.candidateItems
-      .map(c => String(c).replace(/[*_~`]+/g, '').replace(/\s*\([^)]*\)/g, '').trim())
+      .map(c => String(c).replace(/[*~`]+/g, '').replace(/\s*\([^)]*\)/g, '').trim())
       .filter(c => c && !c.toLowerCase().includes('teleporter name') && !c.toLowerCase().includes('possible values'));
 
     if (!setting.options) {
