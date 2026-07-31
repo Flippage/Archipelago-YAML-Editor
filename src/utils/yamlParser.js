@@ -399,7 +399,16 @@ function finalizeSetting(setting) {
           .map(o => String(o.value))
           .filter(v => !v.startsWith('random'));
         if (optKeys.length > 0) {
-          setting.candidateItems = [...optKeys];
+          if (!setting.candidateItems) {
+            setting.candidateItems = [...optKeys];
+          } else {
+            // Merge option keys into existing candidateItems (from description comments)
+            for (const k of optKeys) {
+              if (!setting.candidateItems.includes(k)) {
+                setting.candidateItems.push(k);
+              }
+            }
+          }
         }
       }
     }
