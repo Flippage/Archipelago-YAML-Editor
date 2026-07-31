@@ -598,7 +598,7 @@ function extractCandidatesFromComments(description, settingKey) {
         }
 
         if (textBlock) {
-          if (textBlock.startsWith('[') && textBlock.includes(']')) {
+          if (textBlock.trim().startsWith('[') && textBlock.includes(']')) {
             const arrSub = textBlock.substring(textBlock.indexOf('['), textBlock.indexOf(']') + 1);
             try {
               const parsed = YAML.parse(arrSub);
