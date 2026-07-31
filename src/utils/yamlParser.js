@@ -413,10 +413,18 @@ function finalizeSetting(setting) {
         }
       }
 
+      // Check if the base options are purely true/false (ignoring randoms).
+      // If so, it's a strict boolean toggle and shouldn't be converted to a list
+      // even if the description comments contain bullet points.
+      const baseOptKeys = choiceOptions
+        .map(o => String(o.value).toLowerCase())
+        .filter(v => !v.startsWith('random'));
+      const isPureBoolean = baseOptKeys.length > 0 && baseOptKeys.every(k => k === 'true' || k === 'false');
+
       // If description comments list more items than the YAML options (e.g. comments have
       // ["Van", "Fire Truck", ...] but YAML only has All: 50), this is a list-type setting
       // where users pick multiple items, not a single-choice dropdown.
-      if (hasManyCommentCandidates && setting.type === 'choice') {
+      if (hasManyCommentCandidates && setting.type === 'choice' && !isPureBoolean) {
         setting.type = 'list';
         setting.isHybridSet = true;
         // Convert defaultValue to an array of the YAML keys
@@ -424,6 +432,11 @@ function finalizeSetting(setting) {
           .filter(o => o.weight > 0 && !String(o.value).startsWith('random'))
           .map(o => String(o.value));
         setting.defaultValue = defaultItems;
+      }
+
+      // If it IS a pure boolean toggle, we shouldn't show the extracted comments as options
+      if (isPureBoolean) {
+        setting.candidateItems = [...baseOptKeys];
       }
     }
   } else {
